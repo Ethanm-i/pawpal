@@ -5,12 +5,26 @@
 **a. Initial design**
 
 - Briefly describe your initial UML design.
+
+    my inital design was to haver owner, pet, task and make plan as the classes 
+    - owner with attributes like: name, owner id, avilable time and methods: set time avilable
+    priorites, add pet, remove pet
+    - pet with attributes like: pet name, pet id, size, kind and age and methodes: get information
+    - tasks with attributes like: time and methods: add_task , remove task, completed, inprogress, and incomplete
+
 - What classes did you include, and what responsibilities did you assign to each?
+
+    Owner - getting the owner information, time avilable, adding and removing a pet
+    pet - has the pet information
+    task - owner can add and remove taskes, mark them complete, and in progress
+    make_plan - takes all the information and makes a plan/schedule
 
 **b. Design changes**
 
 - Did your design change during implementation?
 - If yes, describe at least one change and why you made it.
+
+    yes it changed turns out that i was missing some attributes in the owner class but it was being used or expected to be used in the pet class. I ended up adding this adding this to the owner added the owner_id, a method for recurrences added a plan.generer_plan methode to check for tasks and owners information to make a plan. and remover the plan pet paremeter and used ownerpets since one owner can have more than one pet.
 
 ---
 

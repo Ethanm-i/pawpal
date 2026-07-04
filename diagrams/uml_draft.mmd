@@ -1,6 +1,5 @@
 classDiagram
     class Owner {
-        +str owner_id
         +str name
         +dict~date, int~ available_time
         +dict preferences
@@ -8,9 +7,6 @@ classDiagram
         +get_available_time(date) int
         +add_pet(pet)
         +remove_pet(pet_id)
-        +set_preference(key, value)
-        +get_preference(key)
-        +get_all_tasks() list~Task~
     }
 
     class Pet {
@@ -20,10 +16,7 @@ classDiagram
         +int age
         +str size
         +str owner_id
-        +list~Task~ tasks
         +get_info() dict
-        +add_task(task)
-        +remove_task(task_id)
     }
 
     class Task {
@@ -34,11 +27,9 @@ classDiagram
         +Priority priority
         +TaskStatus status
         +str recurrence
-        +str description
         +start()
         +complete()
         +is_done() bool
-        +applies_on(day) bool
     }
 
     class Priority {
@@ -61,7 +52,7 @@ classDiagram
         +list~Task~ tasks
         +list~Task~ scheduled_tasks
         +list~Task~ unscheduled_tasks
-        +generate_plan(owner)
+        +generate_plan(owner, pet, tasks)
         +display_plan()
         +explain_plan() str
     }
@@ -71,4 +62,5 @@ classDiagram
     Task --> Priority : rated by
     Task --> TaskStatus : tracked by
     Plan --> Owner : uses
+    Plan --> Pet : uses
     Plan "1" --> "many" Task : schedules

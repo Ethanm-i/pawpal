@@ -53,6 +53,17 @@ Paste a sample of your app's CLI or Streamlit output here so a reader can see wh
 #   09:00 — Feeding (10 min) [priority: high]
 #   ...
 ```
+**sample out from the main.py**
+
+Today's Schedule
+========================================
+Plan for 2026-07-01 (available time: 30 min)
+Scheduled:
+  - Clean litter box (5 min, HIGH)
+  - Morning walk (20 min, HIGH)
+Unscheduled (out of time):
+  - Brush coat (10 min, MEDIUM)
+  - Play session (15 min, LOW)
 
 ## 🧪 Testing PawPal+
 
