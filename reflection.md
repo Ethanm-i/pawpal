@@ -33,12 +33,19 @@
 **a. Constraints and priorities**
 
 - What constraints does your scheduler consider (for example: time, priority, preferences)?
+
+    My scheduling considers priority, time, turns
+
 - How did you decide which constraints mattered most?
 
 **b. Tradeoffs**
 
 - Describe one tradeoff your scheduler makes.
+    one of the trade off in the scheduler method in the  fair share method makes sure that all  pets are taken care of and fairly it makes sure that the high pority task for both pets are done firts.
+
 - Why is that tradeoff reasonable for this scenario?
+
+    This helps make sure that if the owner has more than one pet, all pets are taken care over spliting the avilable time and make sure that all the pets high prouity tasks are cared for. 
 
 ---
 

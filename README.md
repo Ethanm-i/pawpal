@@ -83,14 +83,20 @@ Sample test output:
 
 ## 📐 Smarter Scheduling
 
-> Fill in once you've implemented scheduling logic.
-
 | Feature | Method(s) | Notes |
 |---------|-----------|-------|
-| Task sorting | | e.g., by priority, duration |
-| Filtering | | e.g., skip tasks if time runs out |
-| Conflict handling | | e.g., overlapping time slots |
-| Recurring tasks | | e.g., daily vs. weekly |
+| Priority/urgency-based scheduling | `Plan._knapsack_select`, `Task.urgency_score` | 0/1 knapsack maximizes total urgency-weighted value within the time budget, instead of greedily filling tasks in priority order — a combination of smaller tasks can beat one large HIGH-priority task if it uses the minutes better. |
+| Maximize task count strategy | `Plan._knapsack_select` (`maximize_count=True`), `ScheduleStrategy.TASK_COUNT` | Same knapsack, but every task is worth 1 instead of its urgency score — optimizes for "most things checked off today" rather than importance. |
+| Fair share across pets | `Plan._fair_share_select`, `ScheduleStrategy.FAIR_SHARE` | Round-robins each pet's most-urgent remaining task so one pet's backlog can't consume the whole time budget. |
+| Task sorting (chronological) | `Plan._build_time_slots`, `Plan.sort_by_time`, `ScheduledSlot` | Scheduled tasks are packed back-to-back starting at a configurable `day_start`. `sort_by_time` re-sorts `schedule` by start time if it's ever rebuilt out of order — accepts either a `datetime.time` or an `"HH:MM"` string. |
+| Filtering by pet / status | `Plan.generate_plan(pet_ids=..., status_filter=...)` | Restricts which pets and task statuses are even considered before scheduling runs. |
+| Filtering by completion / name | `Owner.completion(status=..., name=...)` | Case-insensitive substring match on name, exact match on `TaskStatus`; pass either or both filters (ANDed), or neither to get everything. |
+| Recurring tasks | `Task.applies_on`, `Task.recurrence` | Supports `once`, `daily`, `weekdays`, `weekends`, and `weekly:<day>` recurrence rules. |
+| Auto-advancing recurring tasks | `Task.next_occurrence`, `Pet.complete_task` | Completing a recurring task automatically creates and adds its next occurrence, stepping forward with `timedelta` so month/year boundaries (e.g. Jan 31 → Feb 1) are handled correctly. |
+| Conflict handling | `find_schedule_conflicts`, `Plan.detect_conflicts` | All-pairs overlap check across one or more plans' schedules. Returns warning strings instead of raising — a single plan can never conflict with itself by construction, but two separately-built plans (e.g. one per pet) sharing the same owner's time can. |
+| Unscheduled explanations | `Plan._build_unscheduled_reasons` | Tags each bumped task with why it didn't make the cut: too long to ever fit today, vs. lost out to higher-urgency tasks. |
+| Skip escalation | `Task.times_skipped`, `Task.urgency_score` | A task that gets bumped repeatedly accumulates urgency so it can't be perpetually crowded out by the same higher-priority tasks. |
+| Recompute caching | `Plan._cache_key` | Skips re-running scheduling (and re-incrementing skip counts) if none of the relevant inputs changed since the last `generate_plan` call. |
 
 ## 📸 Demo Walkthrough
 
