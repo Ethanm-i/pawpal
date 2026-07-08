@@ -4,6 +4,7 @@ classDiagram
         +str name
         +dict~date, int~ available_time
         +dict preferences
+        +list~Pet~ pets
         +set_available_time(date, minutes)
         +get_available_time(date) int
         +add_pet(pet)
@@ -11,6 +12,7 @@ classDiagram
         +set_preference(key, value)
         +get_preference(key)
         +get_all_tasks() list~Task~
+        +completion(status, name) list~Task~
     }
 
     class Pet {
@@ -24,6 +26,7 @@ classDiagram
         +get_info() dict
         +add_task(task)
         +remove_task(task_id)
+        +complete_task(task_id) Task
     }
 
     class Task {
@@ -35,10 +38,14 @@ classDiagram
         +TaskStatus status
         +str recurrence
         +str description
+        +int times_skipped
+        +date due_date
         +start()
         +complete()
         +is_done() bool
         +applies_on(day) bool
+        +next_occurrence(from_date) Task
+        +urgency_score() int
     }
 
     class Priority {
@@ -55,20 +62,48 @@ classDiagram
         DONE
     }
 
+    class ScheduleStrategy {
+        <<enumeration>>
+        PRIORITY
+        TASK_COUNT
+        FAIR_SHARE
+    }
+
+    class ScheduledSlot {
+        +Task task
+        +time start
+        +time end
+    }
+
     class Plan {
         +date date
         +int available_time
         +list~Task~ tasks
         +list~Task~ scheduled_tasks
         +list~Task~ unscheduled_tasks
-        +generate_plan(owner)
+        +list~ScheduledSlot~ schedule
+        +dict~str, str~ unscheduled_reasons
+        +generate_plan(owner, pet_ids, status_filter, strategy, day_start)
+        +sort_by_time()
+        +detect_conflicts(other_plans) list~str~
         +display_plan()
         +explain_plan() str
+        -_knapsack_select(tasks, maximize_count) tuple
+        -_fair_share_select(pets, tasks) tuple
+        -_build_time_slots(day_start)
+        -_build_unscheduled_reasons()
     }
+
+    note for Plan "detect_conflicts() delegates to the module-level\nfind_schedule_conflicts() helper, which all-pairs-checks\none or more plans' ScheduledSlot lists for time overlaps."
 
     Owner "1" --> "many" Pet : owns
     Pet "1" --> "many" Task : has
     Task --> Priority : rated by
     Task --> TaskStatus : tracked by
+    Task --> Task : next_occurrence() creates
     Plan --> Owner : uses
+    Plan --> Pet : uses for fair-share scheduling
+    Plan --> ScheduleStrategy : configured by
     Plan "1" --> "many" Task : schedules
+    Plan "1" --> "many" ScheduledSlot : builds
+    ScheduledSlot --> Task : wraps
